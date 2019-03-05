@@ -6,7 +6,7 @@
 
         public T Handle<T>(string name)
         {
-            return default(T);
+            return default;
         }
     }
 }
