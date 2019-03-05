@@ -9,7 +9,7 @@ namespace Abb.Pipeline
 {
     public delegate object PipelineObjectFactory(Type type);
 
-    public abstract class Pipeline<T>
+    public abstract class Pipeline<T> : IPipeline<T>
     {
         private readonly static IDictionary<TypeInfo, StepDescriptor> s_analyzedTypes = new Dictionary<TypeInfo, StepDescriptor>();
         private readonly static IDictionary<Guid, ExecuteStepDelegate> s_boundDelegates = new Dictionary<Guid, ExecuteStepDelegate>();
