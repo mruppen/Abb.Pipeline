@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Abb.Pipeline
 {
-    internal class PipelineExecutionContext : IPipelineExecutionContext
+    public class PipelineExecutionContext : IPipelineExecutionContext
     {
         private readonly IList<(string Name, Type ValueType, object Value)> _variables = new List<(string Name, Type ValueType, object Value)>();
 
