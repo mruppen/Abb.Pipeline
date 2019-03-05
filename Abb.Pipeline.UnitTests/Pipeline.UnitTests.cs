@@ -275,7 +275,7 @@ namespace Abb.Pipeline.UnitTests
                 {
                     Assert.NotNull(context);
                     Assert.Null(unknownParam1);
-                    Assert.Equal(default(int), unknownParam2);
+                    Assert.Equal(default, unknownParam2);
                     context.Add(Parameter.Key, Parameter.Value);
                     return Task.CompletedTask;
                 }

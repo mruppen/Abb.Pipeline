@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Abb.Pipeline
 {
-    internal class PipelineExecutionContext : IPipelineExecutionContext
+    public class PipelineExecutionContext : IPipelineExecutionContext
     {
         private readonly IList<(string Name, Type ValueType, object Value)> _variables = new List<(string Name, Type ValueType, object Value)>();
 
@@ -16,10 +16,10 @@ namespace Abb.Pipeline
 
         public T Get<T>(string name)
         {
-            (string Name, Type ValueType, object Value) variable = default((string Name, Type ValueType, object Value));
+            (string Name, Type ValueType, object Value) variable = default;
             try
             {
-                variable = _variables.Single(e => AreNamesEqual(e.Name, name));
+                variable = _variables.Single(e => e.Name == name);
                 return (T)variable.Value;
             }
             catch (InvalidOperationException)
@@ -30,14 +30,6 @@ namespace Abb.Pipeline
             {
                 throw new ArgumentException($"Value with {name} is of type {variable.ValueType.ToString()}");
             }
-        }
-
-        private static bool AreNamesEqual(string lhs, string rhs)
-        {
-            if (string.IsNullOrEmpty(lhs) || string.IsNullOrEmpty(rhs))
-                return false;
-
-            return lhs.ToLowerInvariant() == rhs.ToLowerInvariant();
         }
     }
 }
