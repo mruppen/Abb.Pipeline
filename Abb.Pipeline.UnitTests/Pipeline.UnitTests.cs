@@ -46,7 +46,6 @@ namespace Abb.Pipeline.UnitTests
                 result.Get<string>(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Key));
         }
 
-
         private class DefaultConstructorBasicOperationSuccessfulPipeline : Pipeline<DefaultConstructorBasicOperationSuccessfulPipeline>
         {
             public static object GetInstanceOfStep(Type type)
