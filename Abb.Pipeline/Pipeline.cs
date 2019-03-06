@@ -85,6 +85,7 @@ namespace Abb.Pipeline
             AddStep(typeof(S));
         }
 
+
         private Task ExecuteStep(StepDescriptor step, IPipelineExecutionContext executionContext, CancellationToken cancellationToken, ExecuteStepDelegate @delegate, IPipelineBehavior[] behaviors)
         {
             var stepInstance = _factory(step.TypeInfo);
