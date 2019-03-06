@@ -12,6 +12,8 @@ namespace Abb.Pipeline
 
         public string[] Names { get { return _variables.Select(i => i.Name).ToArray(); } }
 
+        public static IPipelineExecutionContext Create() => new PipelineExecutionContext();
+
         public void Add<T>(string name, T value) => _variables.Add((name, typeof(T), value));
 
         public T Get<T>(string name)

@@ -40,8 +40,6 @@ namespace Abb.Pipeline
             _unknownParameterBehavior = unknownParameterBehavior ?? throw new ArgumentNullException(nameof(unknownParameterBehavior));
         }
 
-        public static IPipelineExecutionContext CreateDefaultExecutionContext() => new PipelineExecutionContext();
-
         public async Task<IPipelineExecutionContext> Execute(IPipelineExecutionContext executionContext, CancellationToken cancellationToken = default)
         {
             if (executionContext == null) throw new ArgumentNullException(nameof(executionContext));
