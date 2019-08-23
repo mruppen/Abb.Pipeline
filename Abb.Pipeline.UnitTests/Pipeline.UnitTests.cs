@@ -34,6 +34,7 @@ namespace Abb.Pipeline.UnitTests
             await Assert.ThrowsAsync<ArgumentException>(() => testPipeline.Execute());
         }
 
+
         [Fact]
         public async Task Pipeline_use_default_values_behavior_passes_default_value_to_method()
         {
@@ -44,7 +45,6 @@ namespace Abb.Pipeline.UnitTests
             Assert.Equal(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Value,
                 result.Get<string>(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Key));
         }
-
 
         private class DefaultConstructorBasicOperationSuccessfulPipeline : Pipeline<DefaultConstructorBasicOperationSuccessfulPipeline>
         {
