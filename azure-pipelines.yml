@@ -35,7 +35,7 @@ steps:
   displayName: 'Restore'
   inputs:
     command: 'restore'
-    projects: /**/*.csproj
+    projects: '**/*.csproj'
     arguments:  '--configuration $(BuildConfiguration) /p:VersionPrefix=$(GitVersion.MajorMinorPatch) /p:VersionSuffix=$(GitVersion.PreReleaseTag)'
     
 - task: DotNetCoreCLI@2
