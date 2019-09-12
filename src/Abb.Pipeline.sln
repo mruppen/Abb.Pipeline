@@ -9,8 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abb.Pipeline.UnitTests", "A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{15395B65-A0C0-43F9-B66B-28AAE3E8C246}"
 	ProjectSection(SolutionItems) = preProject
-		azure-pipelines.yml = azure-pipelines.yml
+		..\azure-pipelines.yml = ..\azure-pipelines.yml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abb.Pipeline.DI", "Abb.Pipeline.DI\Abb.Pipeline.DI.csproj", "{C702F8D1-498C-4FE9-B67E-779DA6141CDD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abb.Pipeline.DI.Lamar", "Abb.Pipeline.DI.Lamar\Abb.Pipeline.DI.Lamar.csproj", "{51FCDE43-B1DB-4793-980C-5DA15108E274}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Abb.Pipeline.DI.UnitTests", "Abb.Pipeline.DI.UnitTests\Abb.Pipeline.DI.UnitTests.csproj", "{6B5B4D8C-9793-4EA3-AC63-B41EDAE09190}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,6 +32,18 @@ Global
 		{460FC3C4-761D-4B1B-9D0A-1644486B9953}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{460FC3C4-761D-4B1B-9D0A-1644486B9953}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{460FC3C4-761D-4B1B-9D0A-1644486B9953}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C702F8D1-498C-4FE9-B67E-779DA6141CDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C702F8D1-498C-4FE9-B67E-779DA6141CDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C702F8D1-498C-4FE9-B67E-779DA6141CDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C702F8D1-498C-4FE9-B67E-779DA6141CDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51FCDE43-B1DB-4793-980C-5DA15108E274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51FCDE43-B1DB-4793-980C-5DA15108E274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51FCDE43-B1DB-4793-980C-5DA15108E274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51FCDE43-B1DB-4793-980C-5DA15108E274}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B5B4D8C-9793-4EA3-AC63-B41EDAE09190}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B5B4D8C-9793-4EA3-AC63-B41EDAE09190}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B5B4D8C-9793-4EA3-AC63-B41EDAE09190}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B5B4D8C-9793-4EA3-AC63-B41EDAE09190}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
