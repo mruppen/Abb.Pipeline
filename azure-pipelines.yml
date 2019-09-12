@@ -42,7 +42,7 @@ steps:
   displayName: 'Build'
   inputs:
     command: build
-    projects: /**/*.sln
+    projects: '**/*.sln'
     arguments:  '--configuration $(BuildConfiguration) /p:VersionPrefix=$(GitVersion.MajorMinorPatch) /p:VersionSuffix=$(GitVersion.PreReleaseTag)'
     
 - task: DotNetCoreCLI@2
