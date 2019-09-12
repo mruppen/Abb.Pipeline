@@ -35,14 +35,14 @@ steps:
   displayName: 'Restore'
   inputs:
     command: 'restore'
-    workingDirectory: src/
+    projects: src/**/*.sln
     arguments:  '--configuration $(BuildConfiguration) /p:VersionPrefix=$(GitVersion.MajorMinorPatch) /p:VersionSuffix=$(GitVersion.PreReleaseTag)'
     
 - task: DotNetCoreCLI@2
   displayName: 'Build'
   inputs:
     command: build
-    workingDirectory: src/
+    projects: src/**/*.sln
     arguments:  '--configuration $(BuildConfiguration) /p:VersionPrefix=$(GitVersion.MajorMinorPatch) /p:VersionSuffix=$(GitVersion.PreReleaseTag)'
     
 - task: DotNetCoreCLI@2
@@ -50,14 +50,14 @@ steps:
   inputs:
     command: test
     nobuild: true
-    workingDirectory: src/
+    projects: src/**/*.sln
     arguments:  '--configuration $(BuildConfiguration) /p:VersionPrefix=$(GitVersion.MajorMinorPatch) /p:VersionSuffix=$(GitVersion.PreReleaseTag)'
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack'
   inputs:
     command: pack
-    workingDirectory: src/
+    projects: src/**/*.sln
     nobuild: true
     versioningScheme: byEnvVar
     versionEnvVar: GitVersion.NuGetVersion
