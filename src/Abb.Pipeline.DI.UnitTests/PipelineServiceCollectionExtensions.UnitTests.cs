@@ -39,7 +39,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
         {
             var services = new ServiceCollection();
 
-            services.AddPipelines(new[] { typeof(ComplexPipelineDefinition).Assembly });
+            services.AddPipelines(typeof(ComplexPipelineDefinition));
 
             var pipelineDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(ComplexPipelineDefinition));
             var delegateDescriptor = services.SingleOrDefault(d => d.ServiceType == typeof(PipelineObjectFactory));

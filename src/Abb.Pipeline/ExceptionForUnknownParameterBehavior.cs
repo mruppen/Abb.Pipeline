@@ -4,7 +4,7 @@ namespace Abb.Pipeline
 {
     public class ExceptionForUnknownParameterBehavior : IUnknownParameterBehavior
     {
-        public static IUnknownParameterBehavior Instance { get; } = new ExceptionForUnknownParameterBehavior();
+        public static IUnknownParameterBehavior Instance => new ExceptionForUnknownParameterBehavior();
 
         public T Handle<T>(string name)
         {
