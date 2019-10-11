@@ -8,16 +8,27 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class PipelineServiceCollectionExtensions
     {
-        public static IServiceCollection AddPipelines(this IServiceCollection services)
-            => services.AddPipelines(AppDomain.CurrentDomain.GetAssemblies().Where(a => !a.IsDynamic).Distinct());
+        public static IServiceCollection AddPipelines(this IServiceCollection services, params Type[] assemblyMarkerTypes)
+        {
+            if (assemblyMarkerTypes == null)
+                throw new ArgumentNullException(nameof(assemblyMarkerTypes));
+
+            return AddPipelines(services, assemblyMarkerTypes.Select(t => t.Assembly).Distinct().ToArray());
+        }
 
         public static IServiceCollection AddPipelines(this IServiceCollection services, IEnumerable<Assembly> assemblies)
+            => AddPipelines(services, assemblies?.ToArray() ?? new Assembly[0]);
+
+        public static IServiceCollection AddPipelines(this IServiceCollection services, params Assembly[] assemblies)
         {
             if (services == null)
                 throw new ArgumentNullException(nameof(services));
 
             if (assemblies == null)
                 throw new ArgumentNullException(nameof(assemblies));
+
+            if (assemblies.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(assemblies.Length));
 
             services.AddSingleton<PipelineObjectFactory>(p => p.CreateInstance);
 

@@ -6,17 +6,22 @@ using System.Threading.Tasks;
 
 namespace Abb.Pipeline
 {
-    internal delegate Task ExecuteStepDelegate(object stepInstance, IPipelineExecutionContext context, CancellationToken cancellationToken);
+    internal delegate Task ExecuteStepDelegate(object stepInstance,
+        IPipelineExecutionContext context,
+        INamingStrategy namingStrategy,
+        IUnknownParameterBehavior unknownParameterBehavior,
+        CancellationToken cancellationToken);
 
     internal static class StepDescriptorBinder
     {
-        internal static ExecuteStepDelegate Bind(this StepDescriptor step, INamingStrategy namingStrategy, IUnknownParameterBehavior unknownParameterBehavior)
+        internal static ExecuteStepDelegate CreateDelegate(this StepDescriptor step)
         {
             var arguments = new List<Expression>();
             var executionContextParameter = Expression.Parameter(typeof(IPipelineExecutionContext));
             var cancellationTokenParameter = Expression.Parameter(typeof(CancellationToken));
+            var namingStrategyParameter = Expression.Parameter(typeof(INamingStrategy));
+            var unknownParameterBehaviorParameter = Expression.Parameter(typeof(IUnknownParameterBehavior));
             var instanceParameter = Expression.Parameter(typeof(object));
-
 
             for (var i = 0; i < step.Parameters.Length; i++)
             {
@@ -32,10 +37,10 @@ namespace Abb.Pipeline
                 else
                 {
                     var allNames = Expression.Property(executionContextParameter, "Names");
-                    var getParameterName = Expression.Call(Expression.Constant(namingStrategy), "FindMatch", new Type[0], Expression.Constant(parameterName), allNames);
+                    var getParameterName = Expression.Call(namingStrategyParameter, "FindMatch", new Type[0], Expression.Constant(parameterName), allNames);
                     var body = Expression.Call(executionContextParameter, "Get", new[] { parameterType }, getParameterName);
 
-                    var handleUnkownParameter = Expression.Call(Expression.Constant(unknownParameterBehavior), "Handle", new Type[] { parameterType }, Expression.Constant(parameterName));
+                    var handleUnkownParameter = Expression.Call(unknownParameterBehaviorParameter, "Handle", new Type[] { parameterType }, Expression.Constant(parameterName));
                     var @catch = Expression.Catch(typeof(ArgumentException), handleUnkownParameter);
                     var @try = Expression.TryCatch(body, @catch);
                     arguments.Add(@try);
@@ -48,10 +53,12 @@ namespace Abb.Pipeline
             {
                 var result = Expression.Constant(Task.CompletedTask);
                 var wrapper = Expression.Block(typeof(Task), methodCall, result);
-                return Expression.Lambda<ExecuteStepDelegate>(wrapper, instanceParameter, executionContextParameter, cancellationTokenParameter).Compile();
+                return Expression.Lambda<ExecuteStepDelegate>(wrapper, instanceParameter, executionContextParameter, namingStrategyParameter,
+                    unknownParameterBehaviorParameter, cancellationTokenParameter).Compile();
             }
 
-            return Expression.Lambda<ExecuteStepDelegate>(methodCall, instanceParameter, executionContextParameter, cancellationTokenParameter).Compile();
+            return Expression.Lambda<ExecuteStepDelegate>(methodCall, instanceParameter, executionContextParameter, namingStrategyParameter,
+                unknownParameterBehaviorParameter, cancellationTokenParameter).Compile();
         }
     }
 }
