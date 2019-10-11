@@ -10,7 +10,7 @@ namespace Abb.Pipeline
 
         public object CurrentStep { get; set; }
 
-        public string[] Names { get { return _variables.Select(i => i.Name).ToArray(); } }
+        public string[] ParameterNames { get { return _variables.Select(i => i.Name).ToArray(); } }
 
         public static IPipelineExecutionContext Create() => new PipelineExecutionContext();
 

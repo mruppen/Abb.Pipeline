@@ -4,7 +4,7 @@
     {
         object CurrentStep { get; set; }
 
-        string[] Names { get; }
+        string[] ParameterNames { get; }
 
         void Add<T>(string name, T value);
 
