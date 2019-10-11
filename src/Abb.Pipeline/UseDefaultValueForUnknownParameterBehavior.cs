@@ -2,7 +2,7 @@
 {
     public class UseDefaultValueForUnknownParameterBehavior : IUnknownParameterBehavior
     {
-        public static IUnknownParameterBehavior Instance { get; } = new UseDefaultValueForUnknownParameterBehavior();
+        public static IUnknownParameterBehavior Instance => new UseDefaultValueForUnknownParameterBehavior();
 
         public T Handle<T>(string name)
         {

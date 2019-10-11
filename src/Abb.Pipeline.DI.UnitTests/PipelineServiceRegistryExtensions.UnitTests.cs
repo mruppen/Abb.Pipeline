@@ -12,7 +12,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
         [Fact]
         public void ServiceRegistryExtensions_simple_pipeline_registration()
         {
-            var provider = new Container(registry => registry.AddPipelines());
+            var provider = new Container(registry => registry.AddPipelines(typeof(PipelineServiceRegistryExtensions_AspNetCore_UnitTests)));
 
             var pipeline = provider.GetService<Pipeline<SimplePipelineDefinition>>();
 
@@ -25,7 +25,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
         [Fact]
         public void ServiceRegistryExtensions_complex_pipeline_registration()
         {
-            var provider = new Container(registry => registry.AddPipelines(new[] { typeof(ComplexPipelineDefinition).Assembly }));
+            var provider = new Container(registry => registry.AddPipelines(typeof(ComplexPipelineDefinition).Assembly));
 
             var pipeline = provider.GetService<ComplexPipelineDefinition>();
 

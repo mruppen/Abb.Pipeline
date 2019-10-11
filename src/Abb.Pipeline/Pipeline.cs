@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,9 +13,8 @@ namespace Abb.Pipeline
     public abstract class Pipeline<T> : IPipeline<T>
     {
         private readonly static IDictionary<TypeInfo, StepDescriptor> s_analyzedTypes = new Dictionary<TypeInfo, StepDescriptor>();
-        private readonly static IDictionary<Guid, ExecuteStepDelegate> s_boundDelegates = new Dictionary<Guid, ExecuteStepDelegate>();
+        private readonly static ConcurrentDictionary<Guid, ExecuteStepDelegate> s_boundDelegates = new ConcurrentDictionary<Guid, ExecuteStepDelegate>();
 
-        private readonly object _lock = new object();
         private readonly IList<StepDescriptor> _stepDescriptors = new List<StepDescriptor>();
         private readonly PipelineObjectFactory _factory;
         private readonly INamingStrategy _namingStrategy;
@@ -48,15 +48,7 @@ namespace Abb.Pipeline
 
             foreach (var step in _stepDescriptors)
             {
-                ExecuteStepDelegate @delegate = null;
-                lock (_lock)
-                {
-                    if (!s_boundDelegates.TryGetValue(step.Id, out @delegate))
-                    {
-                        s_boundDelegates.Add(step.Id, (@delegate = step.Bind(_namingStrategy, _unknownParameterBehavior)));
-                    }
-                }
-
+                ExecuteStepDelegate @delegate = s_boundDelegates.GetOrAdd(step.Id, _ => step.CreateDelegate());
                 await ExecuteStep(step, executionContext, cancellationToken, @delegate, behaviors);
             }
 
@@ -91,7 +83,7 @@ namespace Abb.Pipeline
             var stepInstance = _factory(step.TypeInfo);
             executionContext.CurrentStep = stepInstance;
 
-            Func<CancellationToken, Task> currentFunc = token => @delegate(stepInstance, executionContext, token);
+            Func<CancellationToken, Task> currentFunc = token => @delegate(stepInstance, executionContext, _namingStrategy, _unknownParameterBehavior, token);
 
             for (var i = behaviors.Length - 1; i >= 0; i--)
             {
