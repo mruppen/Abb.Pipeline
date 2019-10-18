@@ -49,7 +49,7 @@ namespace Abb.Pipeline
             foreach (var step in _stepDescriptors)
             {
                 ExecuteStepDelegate @delegate = s_boundDelegates.GetOrAdd(step.Id, _ => step.CreateDelegate());
-                await ExecuteStep(step, executionContext, cancellationToken, @delegate, behaviors);
+                await ExecuteStep(step, executionContext, @delegate, behaviors, cancellationToken).ConfigureAwait(false);
             }
 
             return executionContext;
@@ -72,30 +72,32 @@ namespace Abb.Pipeline
             _stepDescriptors.Add(stepDescriptor);
         }
 
-        protected void AddStep<S>() where S : class
+        protected void AddStep<TStep>() where TStep : class
         {
-            AddStep(typeof(S));
+            AddStep(typeof(TStep));
         }
 
 
-        private Task ExecuteStep(StepDescriptor step, IPipelineExecutionContext executionContext, CancellationToken cancellationToken, ExecuteStepDelegate @delegate, IPipelineBehavior[] behaviors)
+        private Task ExecuteStep(StepDescriptor step, IPipelineExecutionContext executionContext, ExecuteStepDelegate @delegate, 
+            IPipelineBehavior[] behaviors, CancellationToken cancellationToken)
         {
             var stepInstance = _factory(step.TypeInfo);
             executionContext.CurrentStep = stepInstance;
 
-            Func<CancellationToken, Task> currentFunc = token => @delegate(stepInstance, executionContext, _namingStrategy, _unknownParameterBehavior, token);
+            Func<CancellationToken, Task> currentFunc = token => 
+                @delegate(stepInstance, executionContext, _namingStrategy, _unknownParameterBehavior, token);
 
             for (var i = behaviors.Length - 1; i >= 0; i--)
             {
                 var behavior = behaviors[i];
                 var previousFunc = currentFunc;
-                currentFunc = token => behavior.Handle(executionContext, cancellationToken, previousFunc);
+                currentFunc = token => behavior.Handle(executionContext, previousFunc, cancellationToken);
             }
 
             return currentFunc(cancellationToken);
         }
 
         private IPipelineBehavior[] ResolveBehaviors()
-            => (_factory(typeof(IEnumerable<IPipelineBehavior>)) as IEnumerable<IPipelineBehavior>)?.ToArray() ?? new IPipelineBehavior[0];
+            => (_factory(typeof(IEnumerable<IPipelineBehavior>)) as IEnumerable<IPipelineBehavior>)?.ToArray() ?? Array.Empty<IPipelineBehavior>();
     }
 }

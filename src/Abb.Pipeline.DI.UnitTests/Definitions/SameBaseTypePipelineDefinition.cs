@@ -34,7 +34,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests.Defini
     {
         public void Do(IPipelineExecutionContext context)
         {
-            context.Add("param1Version1", $"Hello from {nameof(Step1Version1)}");
+            context.AddValue("param1Version1", $"Hello from {nameof(Step1Version1)}");
         }
     }
 
@@ -42,7 +42,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests.Defini
     {
         public Task Do(IPipelineExecutionContext context)
         {
-            context.Add("param1Version2", $"Hello from {nameof(Step1Version2)}");
+            context.AddValue("param1Version2", $"Hello from {nameof(Step1Version2)}");
             return Task.CompletedTask;
         }
     }

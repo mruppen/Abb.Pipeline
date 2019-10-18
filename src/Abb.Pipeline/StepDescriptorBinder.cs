@@ -37,7 +37,7 @@ namespace Abb.Pipeline
                 else
                 {
                     var allNames = Expression.Property(executionContextParameter, "Names");
-                    var getParameterName = Expression.Call(namingStrategyParameter, "FindMatch", new Type[0], Expression.Constant(parameterName), allNames);
+                    var getParameterName = Expression.Call(namingStrategyParameter, "FindMatch", Array.Empty<Type>(), Expression.Constant(parameterName), allNames);
                     var body = Expression.Call(executionContextParameter, "Get", new[] { parameterType }, getParameterName);
 
                     var handleUnkownParameter = Expression.Call(unknownParameterBehaviorParameter, "Handle", new Type[] { parameterType }, Expression.Constant(parameterName));

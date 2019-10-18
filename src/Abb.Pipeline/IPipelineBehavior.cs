@@ -6,6 +6,6 @@ namespace Abb.Pipeline
 {
     public interface IPipelineBehavior
     {
-        Task Handle(IPipelineExecutionContext executionContext, CancellationToken token, Func<CancellationToken, Task> next);
+        Task Handle(IPipelineExecutionContext executionContext, Func<CancellationToken, Task> next, CancellationToken token);
     }
 }

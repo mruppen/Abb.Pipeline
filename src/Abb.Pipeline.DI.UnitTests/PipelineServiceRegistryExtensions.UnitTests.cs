@@ -54,8 +54,8 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
 
             var result = await pipelineVersion1.Execute();
 
-            Assert.NotEmpty(result.Get<string>("param1Version1"));
-            Assert.Throws<ArgumentException>(() => result.Get<string>("param1Version2"));
+            Assert.NotEmpty(result.GetValue<string>("param1Version1"));
+            Assert.Throws<ArgumentException>(() => result.GetValue<string>("param1Version2"));
 
             var pipelineVersion2 = provider.GetService<SameBaseTypePipelineDefinitionVersion2>();
 
@@ -68,8 +68,8 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
 
             result = await pipelineVersion2.Execute();
 
-            Assert.Throws<ArgumentException>(() => result.Get<string>("param1Version1"));
-            Assert.NotEmpty(result.Get<string>("param1Version2"));
+            Assert.Throws<ArgumentException>(() => result.GetValue<string>("param1Version1"));
+            Assert.NotEmpty(result.GetValue<string>("param1Version2"));
         }
     }
 }

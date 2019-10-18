@@ -8,8 +8,8 @@ namespace Abb.Pipeline
 
         public string FindMatch(string input, string[] allNames)
         {
-            var comparand = input.ToLowerInvariant();
-            return allNames.SingleOrDefault(n => n.ToLowerInvariant() == comparand);
+            var comparand = input?.ToUpperInvariant();
+            return allNames?.SingleOrDefault(n => n.ToUpperInvariant() == comparand);
         }
     }
 }

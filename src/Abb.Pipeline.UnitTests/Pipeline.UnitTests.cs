@@ -15,7 +15,7 @@ namespace Abb.Pipeline.UnitTests
 
             var context = await testPipeline.Execute();
 
-            Assert.Equal(DefaultConstructorBasicOperationSuccessfulPipeline.Step3.Parameter.Value, context.Get<int?>(DefaultConstructorBasicOperationSuccessfulPipeline.Step3.Parameter.Key));
+            Assert.Equal(DefaultConstructorBasicOperationSuccessfulPipeline.Step3.Parameter.Value, context.GetValue<int?>(DefaultConstructorBasicOperationSuccessfulPipeline.Step3.Parameter.Key));
         }
 
         [Fact]
@@ -43,7 +43,7 @@ namespace Abb.Pipeline.UnitTests
             var result = await testPipeline.Execute();
 
             Assert.Equal(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Value,
-                result.Get<string>(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Key));
+                result.GetValue<string>(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Key));
         }
 
         private class DefaultConstructorBasicOperationSuccessfulPipeline : Pipeline<DefaultConstructorBasicOperationSuccessfulPipeline>
@@ -78,7 +78,7 @@ namespace Abb.Pipeline.UnitTests
 
                 public void Execute(IPipelineExecutionContext context)
                 {
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                 }
             }
 
@@ -88,7 +88,7 @@ namespace Abb.Pipeline.UnitTests
 
                 public Task Execute(string param1, IPipelineExecutionContext context)
                 {
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                     return Task.CompletedTask;
                 }
             }
@@ -99,28 +99,28 @@ namespace Abb.Pipeline.UnitTests
 
                 public Task DoMyStuff(DateTimeOffset param2, IPipelineExecutionContext context)
                 {
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                     return Task.CompletedTask;
                 }
             }
 
             public class Behavior : IPipelineBehavior
             {
-                public async Task Handle(IPipelineExecutionContext executionContext, CancellationToken cancellationToken, Func<CancellationToken, Task> next)
+                public async Task Handle(IPipelineExecutionContext executionContext, Func<CancellationToken, Task> next, CancellationToken cancellationToken)
                 {
                     await next(cancellationToken);
 
                     if (executionContext.CurrentStep is Step1)
                     {
-                        Assert.Equal(Step1.Parameter.Value, executionContext.Get<string>(Step1.Parameter.Key));
+                        Assert.Equal(Step1.Parameter.Value, executionContext.GetValue<string>(Step1.Parameter.Key));
                     }
                     else if (executionContext.CurrentStep is Step2)
                     {
-                        Assert.Equal(Step2.Parameter.Value, executionContext.Get<DateTimeOffset>(Step2.Parameter.Key));
+                        Assert.Equal(Step2.Parameter.Value, executionContext.GetValue<DateTimeOffset>(Step2.Parameter.Key));
                     }
                     else if (executionContext.CurrentStep is Step3)
                     {
-                        Assert.Equal(Step3.Parameter.Value, executionContext.Get<int?>(Step3.Parameter.Key));
+                        Assert.Equal(Step3.Parameter.Value, executionContext.GetValue<int?>(Step3.Parameter.Key));
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace Abb.Pipeline.UnitTests
                 public void Execute(IPipelineExecutionContext context)
                 {
                     Assert.NotNull(context);
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                 }
             }
 
@@ -170,13 +170,13 @@ namespace Abb.Pipeline.UnitTests
 
             public class Behavior : IPipelineBehavior
             {
-                public async Task Handle(IPipelineExecutionContext executionContext, CancellationToken cancellationToken, Func<CancellationToken, Task> next)
+                public async Task Handle(IPipelineExecutionContext executionContext, Func<CancellationToken, Task> next, CancellationToken cancellationToken)
                 {
                     await next(cancellationToken);
 
                     if (executionContext.CurrentStep is Step1)
                     {
-                        Assert.Equal(Step1.Parameter.Value, executionContext.Get<string>(Step1.Parameter.Key));
+                        Assert.Equal(Step1.Parameter.Value, executionContext.GetValue<string>(Step1.Parameter.Key));
                     }
                 }
             }
@@ -210,7 +210,7 @@ namespace Abb.Pipeline.UnitTests
                 public void Execute(IPipelineExecutionContext context)
                 {
                     Assert.NotNull(context);
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                 }
             }
 
@@ -221,14 +221,14 @@ namespace Abb.Pipeline.UnitTests
                 public Task Execute(string PARAM1, IPipelineExecutionContext context)
                 {
                     Assert.NotNull(context);
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                     return Task.CompletedTask;
                 }
             }
 
             public class Behavior : IPipelineBehavior
             {
-                public Task Handle(IPipelineExecutionContext executionContext, CancellationToken token, Func<CancellationToken, Task> next)
+                public Task Handle(IPipelineExecutionContext executionContext, Func<CancellationToken, Task> next, CancellationToken token)
                 {
                     throw new NotImplementedException();
                 }
@@ -263,7 +263,7 @@ namespace Abb.Pipeline.UnitTests
                 public void Execute(IPipelineExecutionContext context)
                 {
                     Assert.NotNull(context);
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                 }
             }
 
@@ -276,7 +276,7 @@ namespace Abb.Pipeline.UnitTests
                     Assert.NotNull(context);
                     Assert.Null(unknownParam1);
                     Assert.Equal(default, unknownParam2);
-                    context.Add(Parameter.Key, Parameter.Value);
+                    context.AddValue(Parameter.Key, Parameter.Value);
                     return Task.CompletedTask;
                 }
             }
