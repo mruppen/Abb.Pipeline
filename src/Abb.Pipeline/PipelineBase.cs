@@ -10,7 +10,7 @@ namespace Abb.Pipeline
 {
     public delegate object PipelineObjectFactory(Type type);
 
-    public abstract class Pipeline<T> : IPipeline<T>
+    public abstract class PipelineBase<T> : IPipeline<T>
     {
         private readonly static IDictionary<TypeInfo, StepDescriptor> s_analyzedTypes = new Dictionary<TypeInfo, StepDescriptor>();
         private readonly static ConcurrentDictionary<Guid, ExecuteStepDelegate> s_boundDelegates = new ConcurrentDictionary<Guid, ExecuteStepDelegate>();
@@ -20,19 +20,19 @@ namespace Abb.Pipeline
         private readonly INamingStrategy _namingStrategy;
         private readonly IUnknownParameterBehavior _unknownParameterBehavior;
 
-        protected Pipeline(PipelineObjectFactory factory)
+        protected PipelineBase(PipelineObjectFactory factory)
             : this(factory, StrictNamingStrategy.Instance, ExceptionForUnknownParameterBehavior.Instance)
         { }
 
-        protected Pipeline(PipelineObjectFactory factory, INamingStrategy namingStrategy)
+        protected PipelineBase(PipelineObjectFactory factory, INamingStrategy namingStrategy)
             : this(factory, namingStrategy, ExceptionForUnknownParameterBehavior.Instance)
         { }
 
-        protected Pipeline(PipelineObjectFactory factory, IUnknownParameterBehavior unknownParameterBehavior)
+        protected PipelineBase(PipelineObjectFactory factory, IUnknownParameterBehavior unknownParameterBehavior)
             : this(factory, StrictNamingStrategy.Instance, unknownParameterBehavior)
         { }
 
-        protected Pipeline(PipelineObjectFactory factory, INamingStrategy namingStrategy,
+        protected PipelineBase(PipelineObjectFactory factory, INamingStrategy namingStrategy,
                            IUnknownParameterBehavior unknownParameterBehavior)
         {
             _factory = factory ?? throw new ArgumentNullException(nameof(factory));

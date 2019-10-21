@@ -46,7 +46,7 @@ namespace Abb.Pipeline.UnitTests
                 result.GetValue<string>(UseDefaultValuesForUnknownParametersPipeline.Step1.Parameter.Key));
         }
 
-        private class DefaultConstructorBasicOperationSuccessfulPipeline : Pipeline<DefaultConstructorBasicOperationSuccessfulPipeline>
+        private class DefaultConstructorBasicOperationSuccessfulPipeline : PipelineBase<DefaultConstructorBasicOperationSuccessfulPipeline>
         {
             public static object GetInstanceOfStep(Type type)
             {
@@ -126,7 +126,7 @@ namespace Abb.Pipeline.UnitTests
             }
         }
 
-        private class DefaultConstructorUnknownParameterThrowsExceptionPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
+        private class DefaultConstructorUnknownParameterThrowsExceptionPipeline : PipelineBase<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
         {
             public static object GetInstanceOfStep(Type type)
             {
@@ -182,7 +182,7 @@ namespace Abb.Pipeline.UnitTests
             }
         }
 
-        private class DefaultConstructorUnmatchedNameThrowsExceptionPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
+        private class DefaultConstructorUnmatchedNameThrowsExceptionPipeline : PipelineBase<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
         {
             public static object GetInstanceOfStep(Type type)
             {
@@ -235,7 +235,7 @@ namespace Abb.Pipeline.UnitTests
             }
         }
 
-        private class UseDefaultValuesForUnknownParametersPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
+        private class UseDefaultValuesForUnknownParametersPipeline : PipelineBase<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
         {
             public static object GetInstanceOfStep(Type type)
             {

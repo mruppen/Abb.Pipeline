@@ -2,7 +2,7 @@
 
 namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests.Definitions
 {
-    public abstract class SharedBaseType : Pipeline<SharedBaseType>
+    public abstract class SharedBaseType : PipelineBase<SharedBaseType>
     {
         protected SharedBaseType(PipelineObjectFactory factory) : base(factory, UseDefaultValueForUnknownParameterBehavior.Instance)
         {

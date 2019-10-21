@@ -33,7 +33,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<PipelineObjectFactory>(p => p.CreateInstance);
 
             var allTypeInfos = assemblies.SelectMany(a => a.DefinedTypes).Select(t => t.GetTypeInfo());
-            foreach (var t in FindTypesThatImplement(allTypeInfos, typeof(Pipeline<>).GetTypeInfo()))
+            foreach (var t in FindTypesThatImplement(allTypeInfos, typeof(PipelineBase<>).GetTypeInfo()))
             {
                 services.AddTransient(t);
             }

@@ -14,7 +14,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
         {
             var provider = new Container(registry => registry.AddPipelines(typeof(PipelineServiceRegistryExtensions_AspNetCore_UnitTests)));
 
-            var pipeline = provider.GetService<Pipeline<SimplePipelineDefinition>>();
+            var pipeline = provider.GetService<PipelineBase<SimplePipelineDefinition>>();
 
             Assert.NotNull(pipeline);
             Assert.IsType<SimplePipelineDefinition>(pipeline);
@@ -48,7 +48,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
             Assert.NotNull(pipelineVersion1);
             Assert.IsType<SameBaseTypePipelineDefinitionVersion1>(pipelineVersion1);
             Assert.IsAssignableFrom<SharedBaseType>(pipelineVersion1);
-            Assert.IsAssignableFrom<Pipeline<SharedBaseType>>(pipelineVersion1);
+            Assert.IsAssignableFrom<PipelineBase<SharedBaseType>>(pipelineVersion1);
             Assert.NotNull(pipelineVersion1.Factory);
             Assert.IsType<PipelineObjectFactory>(pipelineVersion1.Factory);
 
@@ -62,7 +62,7 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
             Assert.NotNull(pipelineVersion2);
             Assert.IsType<SameBaseTypePipelineDefinitionVersion2>(pipelineVersion2);
             Assert.IsAssignableFrom<SharedBaseType>(pipelineVersion2);
-            Assert.IsAssignableFrom<Pipeline<SharedBaseType>>(pipelineVersion2);
+            Assert.IsAssignableFrom<PipelineBase<SharedBaseType>>(pipelineVersion2);
             Assert.NotNull(pipelineVersion2.Factory);
             Assert.IsType<PipelineObjectFactory>(pipelineVersion2.Factory);
 
