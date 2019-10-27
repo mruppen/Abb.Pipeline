@@ -1,6 +1,6 @@
 ﻿namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests.Definitions
 {
-    public class SimplePipelineDefinition : Pipeline<SimplePipelineDefinition>
+    public class SimplePipelineDefinition : PipelineBase<SimplePipelineDefinition>
     {
         public SimplePipelineDefinition(PipelineObjectFactory factory) : base(factory)
         {

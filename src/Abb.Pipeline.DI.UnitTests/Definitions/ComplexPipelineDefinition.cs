@@ -1,6 +1,6 @@
 ﻿namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests.Definitions
 {
-    public abstract class AdditionalInheritanceLayer<T> : Pipeline<T>
+    public abstract class AdditionalInheritanceLayer<T> : PipelineBase<T>
     {
         protected AdditionalInheritanceLayer(PipelineObjectFactory factory)
             : base(factory)

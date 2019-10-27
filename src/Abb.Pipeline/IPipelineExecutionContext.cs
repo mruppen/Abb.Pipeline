@@ -1,13 +1,17 @@
-﻿namespace Abb.Pipeline
+﻿using System.Runtime.CompilerServices;
+
+[assembly:InternalsVisibleTo("Abb.Pipeline.UnitTests")]
+
+namespace Abb.Pipeline
 {
     public interface IPipelineExecutionContext
     {
-        object CurrentStep { get; set; }
+        internal object CurrentStep { get; set; }
 
-        string[] Names { get; }
+        string[] ParameterNames { get; }
 
-        void Add<T>(string name, T value);
+        void AddValue<T>(string name, T value);
 
-        T Get<T>(string name);
+        T GetValue<T>(string name);
     }
 }

@@ -84,28 +84,28 @@ namespace Abb.Pipeline.Microsoft.Extensions.DependencyInjection.UnitTests
             Assert.NotNull(pipelineVersion1);
             Assert.IsType<SameBaseTypePipelineDefinitionVersion1>(pipelineVersion1);
             Assert.IsAssignableFrom<SharedBaseType>(pipelineVersion1);
-            Assert.IsAssignableFrom<Pipeline<SharedBaseType>>(pipelineVersion1);
+            Assert.IsAssignableFrom<PipelineBase<SharedBaseType>>(pipelineVersion1);
             Assert.NotNull(pipelineVersion1.Factory);
             Assert.IsType<PipelineObjectFactory>(pipelineVersion1.Factory);
 
             var result = await pipelineVersion1.Execute();
 
-            Assert.NotEmpty(result.Get<string>("param1Version1"));
-            Assert.Throws<ArgumentException>(() => result.Get<string>("param1Version2"));
+            Assert.NotEmpty(result.GetValue<string>("param1Version1"));
+            Assert.Throws<ArgumentException>(() => result.GetValue<string>("param1Version2"));
 
             var pipelineVersion2 = provider.GetService<SameBaseTypePipelineDefinitionVersion2>();
 
             Assert.NotNull(pipelineVersion2);
             Assert.IsType<SameBaseTypePipelineDefinitionVersion2>(pipelineVersion2);
             Assert.IsAssignableFrom<SharedBaseType>(pipelineVersion2);
-            Assert.IsAssignableFrom<Pipeline<SharedBaseType>>(pipelineVersion2);
+            Assert.IsAssignableFrom<PipelineBase<SharedBaseType>>(pipelineVersion2);
             Assert.NotNull(pipelineVersion2.Factory);
             Assert.IsType<PipelineObjectFactory>(pipelineVersion2.Factory);
 
             result = await pipelineVersion2.Execute();
 
-            Assert.Throws<ArgumentException>(() => result.Get<string>("param1Version1"));
-            Assert.NotEmpty(result.Get<string>("param1Version2"));
+            Assert.Throws<ArgumentException>(() => result.GetValue<string>("param1Version1"));
+            Assert.NotEmpty(result.GetValue<string>("param1Version2"));
         }
     }
 }

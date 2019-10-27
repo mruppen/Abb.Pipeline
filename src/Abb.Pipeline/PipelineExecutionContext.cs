@@ -8,15 +8,15 @@ namespace Abb.Pipeline
     {
         private readonly IList<(string Name, Type ValueType, object Value)> _variables = new List<(string Name, Type ValueType, object Value)>();
 
-        public object CurrentStep { get; set; }
+        object IPipelineExecutionContext.CurrentStep { get; set; }
 
-        public string[] Names { get { return _variables.Select(i => i.Name).ToArray(); } }
+        public string[] ParameterNames { get { return _variables.Select(i => i.Name).ToArray(); } }
 
         public static IPipelineExecutionContext Create() => new PipelineExecutionContext();
 
-        public void Add<T>(string name, T value) => _variables.Add((name, typeof(T), value));
+        public void AddValue<T>(string name, T value) => _variables.Add((name, typeof(T), value));
 
-        public T Get<T>(string name)
+        public T GetValue<T>(string name)
         {
             (string Name, Type ValueType, object Value) variable = default;
             try
