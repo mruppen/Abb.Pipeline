@@ -11,7 +11,9 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddPipelines(this IServiceCollection services, params Type[] assemblyMarkerTypes)
         {
             if (assemblyMarkerTypes == null)
+            {
                 throw new ArgumentNullException(nameof(assemblyMarkerTypes));
+            }
 
             return AddPipelines(services, assemblyMarkerTypes.Select(t => t.Assembly).Distinct().ToArray());
         }
@@ -22,13 +24,19 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IServiceCollection AddPipelines(this IServiceCollection services, params Assembly[] assemblies)
         {
             if (services == null)
+            {
                 throw new ArgumentNullException(nameof(services));
+            }
 
             if (assemblies == null)
+            {
                 throw new ArgumentNullException(nameof(assemblies));
+            }
 
             if (assemblies.Length == 0)
+            {
                 throw new ArgumentOutOfRangeException(nameof(assemblies.Length));
+            }
 
             services.AddSingleton<PipelineObjectFactory>(p => p.CreateInstance);
 
@@ -55,10 +63,14 @@ namespace Microsoft.Extensions.DependencyInjection
         private static bool DoesInheritFrom(this TypeInfo typeInfo, TypeInfo baseType)
         {
             if (typeInfo == typeof(object) || baseType == typeof(object))
+            {
                 return false;
+            }
 
             if (typeInfo.BaseType.IsGenericType && typeInfo.BaseType.GetGenericTypeDefinition().GetTypeInfo() == baseType)
+            {
                 return true;
+            }
 
             return typeInfo.BaseType.GetTypeInfo().DoesInheritFrom(baseType);
         }

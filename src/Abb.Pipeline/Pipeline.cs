@@ -15,9 +15,9 @@ namespace Abb.Pipeline
         private readonly static IDictionary<TypeInfo, StepDescriptor> s_analyzedTypes = new Dictionary<TypeInfo, StepDescriptor>();
         private readonly static ConcurrentDictionary<Guid, ExecuteStepDelegate> s_boundDelegates = new ConcurrentDictionary<Guid, ExecuteStepDelegate>();
 
-        private readonly IList<StepDescriptor> _stepDescriptors = new List<StepDescriptor>();
         private readonly PipelineObjectFactory _factory;
         private readonly INamingStrategy _namingStrategy;
+        private readonly IList<StepDescriptor> _stepDescriptors = new List<StepDescriptor>();
         private readonly IUnknownParameterBehavior _unknownParameterBehavior;
 
         protected Pipeline(PipelineObjectFactory factory)
@@ -40,25 +40,30 @@ namespace Abb.Pipeline
             _unknownParameterBehavior = unknownParameterBehavior ?? throw new ArgumentNullException(nameof(unknownParameterBehavior));
         }
 
-        public async Task<IPipelineExecutionContext> Execute(IPipelineExecutionContext executionContext, CancellationToken cancellationToken = default)
+        public Task<IPipelineExecutionContext> Execute(IPipelineExecutionContext executionContext, CancellationToken cancellationToken = default)
         {
-            if (executionContext == null) throw new ArgumentNullException(nameof(executionContext));
-
-            var behaviors = ResolveBehaviors();
-
-            foreach (var step in _stepDescriptors)
+            if (executionContext == null)
             {
-                ExecuteStepDelegate @delegate = s_boundDelegates.GetOrAdd(step.Id, _ => step.CreateDelegate());
-                await ExecuteStep(step, executionContext, cancellationToken, @delegate, behaviors);
+                throw new ArgumentNullException(nameof(executionContext));
             }
 
-            return executionContext;
+            async Task<IPipelineExecutionContext> Core()
+            {
+                var behaviors = ResolveBehaviors();
+
+                foreach (var step in _stepDescriptors)
+                {
+                    ExecuteStepDelegate @delegate = s_boundDelegates.GetOrAdd(step.Id, _ => step.CreateDelegate());
+                    await ExecuteStep(step, executionContext, cancellationToken, @delegate, behaviors);
+                }
+
+                return executionContext;
+            }
+
+            return Core();
         }
 
-        public Task<IPipelineExecutionContext> Execute(CancellationToken cancellationToken = default)
-        {
-            return Execute(new PipelineExecutionContext(), cancellationToken);
-        }
+        public Task<IPipelineExecutionContext> Execute(CancellationToken cancellationToken = default) => Execute(new PipelineExecutionContext(), cancellationToken);
 
         protected void AddStep(Type type)
         {
@@ -72,11 +77,7 @@ namespace Abb.Pipeline
             _stepDescriptors.Add(stepDescriptor);
         }
 
-        protected void AddStep<S>() where S : class
-        {
-            AddStep(typeof(S));
-        }
-
+        protected void AddStep<S>() where S : class => AddStep(typeof(S));
 
         private Task ExecuteStep(StepDescriptor step, IPipelineExecutionContext executionContext, CancellationToken cancellationToken, ExecuteStepDelegate @delegate, IPipelineBehavior[] behaviors)
         {

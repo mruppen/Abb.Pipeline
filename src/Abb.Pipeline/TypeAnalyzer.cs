@@ -11,11 +11,15 @@ namespace Abb.Pipeline
             var methods = type.GetMethods(BindingFlags.Instance | BindingFlags.Public);
 
             if (methods?.Length == 0)
-                throw new Exception();
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
 
             var validMethods = FindMethodWithParameter(methods, typeof(IPipelineExecutionContext));
             if (validMethods?.Length != 1)
-                throw new Exception();
+            {
+                throw new ArgumentOutOfRangeException(nameof(type));
+            }
 
             var method = validMethods.First();
 
@@ -34,7 +38,6 @@ namespace Abb.Pipeline
             {
                 var parameters = mi.GetParameters().Select(p => p.ParameterType);
                 return parameterTypes.All(p => parameters.Contains(p));
-
             }).ToArray();
         }
     }

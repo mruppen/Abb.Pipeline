@@ -34,7 +34,6 @@ namespace Abb.Pipeline.UnitTests
             await Assert.ThrowsAsync<ArgumentException>(() => testPipeline.Execute());
         }
 
-
         [Fact]
         public async Task Pipeline_use_default_values_behavior_passes_default_value_to_method()
         {
@@ -48,28 +47,57 @@ namespace Abb.Pipeline.UnitTests
 
         private class DefaultConstructorBasicOperationSuccessfulPipeline : Pipeline<DefaultConstructorBasicOperationSuccessfulPipeline>
         {
-            public static object GetInstanceOfStep(Type type)
-            {
-                if (type == typeof(Step1))
-                    return new Step1();
-
-                if (type == typeof(Step2))
-                    return new Step2();
-
-                if (type == typeof(Step3))
-                    return new Step3();
-
-                if (type == typeof(IEnumerable<IPipelineBehavior>))
-                    return new IPipelineBehavior[] { new Behavior() };
-
-                return null;
-            }
-
             public DefaultConstructorBasicOperationSuccessfulPipeline() : base(GetInstanceOfStep)
             {
                 AddStep<Step1>();
                 AddStep<Step2>();
                 AddStep<Step3>();
+            }
+
+            public static object GetInstanceOfStep(Type type)
+            {
+                if (type == typeof(Step1))
+                {
+                    return new Step1();
+                }
+
+                if (type == typeof(Step2))
+                {
+                    return new Step2();
+                }
+
+                if (type == typeof(Step3))
+                {
+                    return new Step3();
+                }
+
+                if (type == typeof(IEnumerable<IPipelineBehavior>))
+                {
+                    return new IPipelineBehavior[] { new Behavior() };
+                }
+
+                return null;
+            }
+
+            public class Behavior : IPipelineBehavior
+            {
+                public async Task Handle(IPipelineExecutionContext executionContext, CancellationToken cancellationToken, Func<CancellationToken, Task> next)
+                {
+                    await next(cancellationToken);
+
+                    if (executionContext.CurrentStep is Step1)
+                    {
+                        Assert.Equal(Step1.Parameter.Value, executionContext.Get<string>(Step1.Parameter.Key));
+                    }
+                    else if (executionContext.CurrentStep is Step2)
+                    {
+                        Assert.Equal(Step2.Parameter.Value, executionContext.Get<DateTimeOffset>(Step2.Parameter.Key));
+                    }
+                    else if (executionContext.CurrentStep is Step3)
+                    {
+                        Assert.Equal(Step3.Parameter.Value, executionContext.Get<int?>(Step3.Parameter.Key));
+                    }
+                }
             }
 
             public class Step1
@@ -103,6 +131,31 @@ namespace Abb.Pipeline.UnitTests
                     return Task.CompletedTask;
                 }
             }
+        }
+
+        private class DefaultConstructorUnknownParameterThrowsExceptionPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
+        {
+            public DefaultConstructorUnknownParameterThrowsExceptionPipeline()
+                : base(GetInstanceOfStep)
+            {
+                AddStep<Step1>();
+                AddStep<Step2>();
+            }
+
+            public static object GetInstanceOfStep(Type type)
+            {
+                if (type == typeof(Step1))
+                {
+                    return new Step1();
+                }
+
+                if (type == typeof(Step2))
+                {
+                    return new Step2();
+                }
+
+                return null;
+            }
 
             public class Behavior : IPipelineBehavior
             {
@@ -114,37 +167,7 @@ namespace Abb.Pipeline.UnitTests
                     {
                         Assert.Equal(Step1.Parameter.Value, executionContext.Get<string>(Step1.Parameter.Key));
                     }
-                    else if (executionContext.CurrentStep is Step2)
-                    {
-                        Assert.Equal(Step2.Parameter.Value, executionContext.Get<DateTimeOffset>(Step2.Parameter.Key));
-                    }
-                    else if (executionContext.CurrentStep is Step3)
-                    {
-                        Assert.Equal(Step3.Parameter.Value, executionContext.Get<int?>(Step3.Parameter.Key));
-                    }
                 }
-            }
-        }
-
-        private class DefaultConstructorUnknownParameterThrowsExceptionPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
-        {
-            public static object GetInstanceOfStep(Type type)
-            {
-                if (type == typeof(Step1))
-                    return new Step1();
-
-                if (type == typeof(Step2))
-                    return new Step2();
-
-
-                return null;
-            }
-
-            public DefaultConstructorUnknownParameterThrowsExceptionPipeline()
-                : base(GetInstanceOfStep)
-            {
-                AddStep<Step1>();
-                AddStep<Step2>();
             }
 
             public class Step1
@@ -167,40 +190,38 @@ namespace Abb.Pipeline.UnitTests
                     return Task.CompletedTask;
                 }
             }
-
-            public class Behavior : IPipelineBehavior
-            {
-                public async Task Handle(IPipelineExecutionContext executionContext, CancellationToken cancellationToken, Func<CancellationToken, Task> next)
-                {
-                    await next(cancellationToken);
-
-                    if (executionContext.CurrentStep is Step1)
-                    {
-                        Assert.Equal(Step1.Parameter.Value, executionContext.Get<string>(Step1.Parameter.Key));
-                    }
-                }
-            }
         }
 
         private class DefaultConstructorUnmatchedNameThrowsExceptionPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
         {
-            public static object GetInstanceOfStep(Type type)
-            {
-                if (type == typeof(Step1))
-                    return new Step1();
-
-                if (type == typeof(Step2))
-                    return new Step2();
-
-
-                return null;
-            }
-
             public DefaultConstructorUnmatchedNameThrowsExceptionPipeline()
                 : base(GetInstanceOfStep)
             {
                 AddStep<Step1>();
                 AddStep<Step2>();
+            }
+
+            public static object GetInstanceOfStep(Type type)
+            {
+                if (type == typeof(Step1))
+                {
+                    return new Step1();
+                }
+
+                if (type == typeof(Step2))
+                {
+                    return new Step2();
+                }
+
+                return null;
+            }
+
+            public class Behavior : IPipelineBehavior
+            {
+                public Task Handle(IPipelineExecutionContext executionContext, CancellationToken token, Func<CancellationToken, Task> next)
+                {
+                    throw new NotImplementedException();
+                }
             }
 
             public class Step1
@@ -225,35 +246,30 @@ namespace Abb.Pipeline.UnitTests
                     return Task.CompletedTask;
                 }
             }
-
-            public class Behavior : IPipelineBehavior
-            {
-                public Task Handle(IPipelineExecutionContext executionContext, CancellationToken token, Func<CancellationToken, Task> next)
-                {
-                    throw new NotImplementedException();
-                }
-            }
         }
 
         private class UseDefaultValuesForUnknownParametersPipeline : Pipeline<DefaultConstructorUnknownParameterThrowsExceptionPipeline>
         {
-            public static object GetInstanceOfStep(Type type)
-            {
-                if (type == typeof(Step1))
-                    return new Step1();
-
-                if (type == typeof(Step2))
-                    return new Step2();
-
-
-                return null;
-            }
-
             public UseDefaultValuesForUnknownParametersPipeline()
                 : base(GetInstanceOfStep, UseDefaultValueForUnknownParameterBehavior.Instance)
             {
                 AddStep<Step1>();
                 AddStep<Step2>();
+            }
+
+            public static object GetInstanceOfStep(Type type)
+            {
+                if (type == typeof(Step1))
+                {
+                    return new Step1();
+                }
+
+                if (type == typeof(Step2))
+                {
+                    return new Step2();
+                }
+
+                return null;
             }
 
             public class Step1

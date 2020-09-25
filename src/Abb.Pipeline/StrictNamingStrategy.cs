@@ -9,7 +9,9 @@ namespace Abb.Pipeline
         public string FindMatch(string input, string[] allNames)
         {
             if (!allNames.Any(n => n == input))
+            {
                 return null;
+            }
 
             return input;
         }
